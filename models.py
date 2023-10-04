@@ -1,14 +1,14 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, Table
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 engine = create_engine("sqlite:///my_database.db")
 
-# Define the intermediary table for the many-to-many relationship
-customer_product = Table('customer_product', Base.metadata,
-    Column('customer_id', Integer, ForeignKey('customers.id')),
-    Column('product_id', Integer, ForeignKey('products.id'))
+
+customer_product = Table("customer_product", Base.metadata,
+    Column("customer_id", Integer, ForeignKey("customers.id"), primary_key=True),
+    Column("product_id", Integer, ForeignKey("products.id"), primary_key=True)
 )
 
 class Customer(Base):
@@ -18,6 +18,7 @@ class Customer(Base):
     interactions = relationship('Interaction', back_populates='customer')
     reviews = relationship('Review', back_populates='customer')
     products = relationship('Product', secondary=customer_product, back_populates='customers')
+    
 
 class Interaction(Base):
     __tablename__ = 'interactions'
@@ -41,18 +42,19 @@ class Product(Base):
     name = Column(String)
     price = Column(Float)
     customers = relationship('Customer', secondary=customer_product, back_populates='products')
+   
+
 
 if __name__ == "__main__":
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    # Example Usage:
-    customer1 = Customer(name="John Doe")
-    customer2 = Customer(name="Jane Smith")
+    customer1 = Customer(name="masibo")
+    customer2 = Customer(name="alex")
 
-    product1 = Product(name="Product A", price=50.0)
-    product2 = Product(name="Product B", price=75.0)
+    product1 = Product(name="floor", price=50.0)
+    product2 = Product(name="pumpkin", price=75.0)
 
     customer1.products.append(product1)
     customer1.products.append(product2)
@@ -67,7 +69,6 @@ if __name__ == "__main__":
     session.add_all([customer1, customer2, product1, product2, interaction1, interaction2, review1, review2])
     session.commit()
 
-    # Querying Example:
     print("Customer 1 Interactions:")
     for interaction in customer1.interactions:
         print(interaction.type, interaction.details)
