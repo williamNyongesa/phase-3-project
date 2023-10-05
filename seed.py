@@ -1,12 +1,15 @@
+# seed.py
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Customer, Product, Interaction, Review
+from models import Customer, Product, Interaction, Review, Base
 from faker import Faker
 
 fake = Faker()
 engine = create_engine("sqlite:///my_database.db")
-Session = sessionmaker(bind=engine)
-session = Session()
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 # Generate fake customers
 customers = [Customer(name=fake.name()) for _ in range(10)]
