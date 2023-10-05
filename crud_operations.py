@@ -1,6 +1,5 @@
-# crud_operations.py
 from sqlalchemy.orm import sessionmaker
-from models import engine, Customer, Interaction, Review
+from models import engine, Customer
 
 Session = sessionmaker(bind=engine)
 

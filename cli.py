@@ -1,4 +1,3 @@
-# cli.py
 import click
 from crud_operations import create_customer, get_customers, get_customer_by_id, update_customer, delete_customer
 
